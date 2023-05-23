@@ -8,6 +8,8 @@ import styled from "styled-components";
 
 function App() {
   const [getMoment, setMoment] = useState(moment());
+  const [selectedDate, setSelectedDate] = useState("");
+  const [allList, setAllList] = useState("");
   let today = getMoment;
 
   console.log(today);
@@ -17,15 +19,21 @@ function App() {
         <CalendarWrap>
           <MonthSection
             setPrevMoment={() => {
-              console.log("누름");
               setMoment(getMoment.clone().subtract(1, "month"));
             }}
             setNextMoment={() => setMoment(getMoment.clone().add(1, "month"))}
             today={today}
           />
-          <DateSection today={today} />
+          <DateSection
+            today={today}
+            setDate={(date) => setSelectedDate(date)}
+            allList={allList}
+          />
         </CalendarWrap>
-        <TodoList />
+        <TodoList
+          selectedDate={selectedDate}
+          setAllList={(e) => setAllList(e)}
+        />
       </MainContainer>
     </div>
   );

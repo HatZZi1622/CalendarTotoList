@@ -4,7 +4,7 @@ import styled from "styled-components";
 import moment from "moment";
 import SmallArrow from "../assets/smallArrow.png";
 
-const TimeModal = ({ open, onClose, timeSet, onSubmit }) => {
+const TimeModal = ({ open, timeSet }) => {
   const [timeNow, setTimeNow] = useState(moment().format("HH : mm"));
   const [formattedTime, setFormattedTime] = useState(moment());
 
@@ -50,7 +50,10 @@ const TimeModal = ({ open, onClose, timeSet, onSubmit }) => {
     }
   };
 
-  console.log(timeNow);
+  const submitComplete = () => {
+    timeSet(timeNow);
+  };
+
   return open
     ? ReactDOM.createPortal(
         <ModalContainer>
@@ -73,8 +76,7 @@ const TimeModal = ({ open, onClose, timeSet, onSubmit }) => {
             </TimeSetting>
             <SubmitBtn
               onClick={() => {
-                timeSet(timeNow);
-                onSubmit();
+                submitComplete();
               }}
             >
               Submit

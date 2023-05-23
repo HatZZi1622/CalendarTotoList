@@ -1,16 +1,45 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Check from "../assets/isCheck.png";
 import TimeModal from "./TimeModal";
 
-const TodoList = () => {
+const Lines = (type) => {
+  switch (type) {
+    case "UnderLined":
+      console.log("타는중이다");
+      return "line-through";
+    case "NonLine":
+      return "";
+    default:
+      break;
+  }
+};
+const TypeCheck = (type) => {
+  switch (type) {
+    case true:
+      return "UnderLined";
+    case false:
+      return "NonLine";
+    default:
+      break;
+  }
+};
+
+const TodoList = ({ selectedDate, setAllList }) => {
   const [lists, setLists] = useState([]);
   const [newList, setNewList] = useState("");
   const [isTimeModalOpen, setIsTimeModalOpen] = useState(false);
-  const [timeInfo, setTimeInfo] = useState("");
+  const [selectedList, setSelectedList] = useState();
 
-  const submit = () => {
+  useEffect(() => {
+    if (selectedDate !== "") {
+      setSelectedList(lists.filter((e) => e.date === selectedDate));
+    } else setSelectedList();
+  }, [selectedDate, lists]);
+
+  const submit = (timeInfo) => {
     let temp = {
+      date: selectedDate,
       id: lists.length,
       value: newList,
       time: timeInfo,
@@ -21,12 +50,12 @@ const TodoList = () => {
     result.push(temp);
     setLists(result);
     setNewList("");
-    setTimeInfo("");
+    setIsTimeModalOpen(false);
   };
 
   const openUp = (i) => {
-    let temp = [...lists];
-    for (let n = 0; n < lists.length; n++) {
+    let temp = [...selectedList];
+    for (let n = 0; n < selectedList.length; n++) {
       if (n !== i) {
         temp[n] = { ...temp[n], isOpen: false };
       } else {
@@ -37,26 +66,35 @@ const TodoList = () => {
         }
       }
     }
-    setLists(temp);
+    setSelectedList(temp);
+    // setAllList(lists);
   };
   const checkOut = (i) => {
-    let temp = [...lists];
+    let temp = [...selectedList];
     temp[i] = { ...temp[i], isCheck: true };
-    setLists(temp);
+    setSelectedList(temp);
+    let temp2 = [...lists];
+    let temp2index = temp2.findIndex((e) => e.value === temp[i].value);
+    temp2[temp2index] = { ...temp2[temp2index], isCheck: true };
+    setLists(temp2);
   };
 
-  console.log(timeInfo);
+  console.log(selectedList);
 
   return (
     <Container>
       <Title>To Do List</Title>
       <Contents>
-        {lists.length > 0 &&
-          lists.map((v, index) => {
+        {selectedList &&
+          selectedList.map((v, index) => {
             return (
               <div ket={index} className="row">
                 <ListInfo>
-                  <div className="listName" onClick={() => openUp(index)}>
+                  <div
+                    className="listName"
+                    type={TypeCheck(v.isCheck)}
+                    onClick={() => openUp(index)}
+                  >
                     {index + 1}번째 할 일
                   </div>
                   <div className="listTime">{v.time}</div>
@@ -80,14 +118,12 @@ const TodoList = () => {
         <Input
           value={newList}
           onKeyDown={() => {
-            window.event.keyCode === 13 && submit();
-            // setIsTimeModalOpen(true);
+            window.event.keyCode === 13 && setIsTimeModalOpen(true);
           }}
           onChange={(e) => setNewList(e.target.value)}
         />
         <Button
           onClick={() => {
-            // submit();
             setIsTimeModalOpen(true);
           }}
         >
@@ -96,11 +132,9 @@ const TodoList = () => {
       </InputArea>
       <TimeModal
         open={isTimeModalOpen}
-        onClose={() => setIsTimeModalOpen(false)}
-        timeSet={(timeNow) => setTimeInfo(timeNow)}
-        onSubmit={() => {
-          submit();
-          setIsTimeModalOpen(false);
+        timeSet={(time) => {
+          submit(time);
+          setAllList(lists);
         }}
       />
     </Container>
@@ -156,6 +190,7 @@ const ListInfo = styled.div`
 
   .listName {
     display: flex;
+    text-decoration: ${(props) => `${Lines(props.type)}`};
     cursor: pointer;
   }
 
@@ -171,7 +206,7 @@ const OpenWrap = styled.div`
   align-items: center;
   justify-content: space-between;
   .opened {
-    padding: 10px 0px;
+    padding-top: 20px;
   }
 `;
 
@@ -209,8 +244,9 @@ const Button = styled.button`
 `;
 const Done = styled.img`
   display: flex;
-  width: 25px;
-  height: 25px;
+  width: 20px;
+  height: 20px;
+  padding-top: 20px;
   border: none;
   background-color: #ffff;
 `;
@@ -218,6 +254,7 @@ const Checked = styled.button`
   display: flex;
   cursor: pointer;
   margin-right: 10px;
+  padding-top: 12px;
   width: 30px;
   height: 20px;
   border: none;

@@ -5,7 +5,6 @@ import ArrowRightIcon from "../assets/arrowRight.png";
 import moment from "moment";
 
 const MonthSection = ({ setPrevMoment, setNextMoment, today }) => {
-  console.log(today);
   let todayInfo = today;
   return (
     <Container>
