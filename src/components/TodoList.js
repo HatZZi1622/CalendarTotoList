@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Check from "../assets/isCheck.png";
 import TimeModal from "./TimeModal";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setList } from "../data/listData";
 
 const Lines = (type) => {
@@ -30,31 +30,41 @@ const TypeCheck = (type) => {
 const TodoList = ({ selectedDate }) => {
   const dispatch = useDispatch();
 
-  const [lists, setLists] = useState([]);
   const [newList, setNewList] = useState("");
   const [isTimeModalOpen, setIsTimeModalOpen] = useState(false);
   const [selectedList, setSelectedList] = useState();
 
+  let reduxValue = useSelector((state) => {
+    return state.listData.value;
+  });
+
   useEffect(() => {
-    if (selectedDate !== "") {
-      setSelectedList(lists.filter((e) => e.date === selectedDate));
+    if (selectedDate !== "" && reduxValue !== undefined) {
+      setSelectedList(reduxValue.result.filter((e) => e.date === selectedDate));
     } else setSelectedList();
-  }, [selectedDate, lists]);
+  }, [selectedDate, reduxValue]);
 
   const submit = async (timeInfo) => {
     let temp = {
       date: selectedDate,
-      id: lists.length,
+      id: reduxValue === undefined ? 0 : Object.keys(reduxValue.result).length,
       value: newList,
       time: timeInfo,
       isOpen: false,
       isCheck: false,
     };
-    let result = [...lists];
-    result.push(temp);
-    await setLists(result);
-    await setNewList("");
-    await dispatch(setList({ result }));
+    if (reduxValue !== undefined) {
+      let result = [...reduxValue.result];
+      result.push(temp);
+      await setNewList("");
+      await dispatch(setList({ result }));
+    } else {
+      let result = [];
+      result.push(temp);
+      await setNewList("");
+      await dispatch(setList({ result }));
+    }
+
     setIsTimeModalOpen(false);
   };
 
@@ -77,10 +87,10 @@ const TodoList = ({ selectedDate }) => {
     let temp = [...selectedList];
     temp[i] = { ...temp[i], isCheck: true };
     setSelectedList(temp);
-    let temp2 = [...lists];
-    let temp2index = temp2.findIndex((e) => e.value === temp[i].value);
-    temp2[temp2index] = { ...temp2[temp2index], isCheck: true };
-    setLists(temp2);
+    let result = [...reduxValue.result];
+    let resultindex = result.findIndex((e) => e.value === temp[i].value);
+    result[resultindex] = { ...result[resultindex], isCheck: true };
+    dispatch(setList({ result }));
   };
 
   return (

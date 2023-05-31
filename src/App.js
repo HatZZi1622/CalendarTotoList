@@ -11,7 +11,6 @@ function App() {
   const [selectedDate, setSelectedDate] = useState("");
   let today = getMoment;
 
-  console.log(today);
   return (
     <div className="App">
       <MainContainer>

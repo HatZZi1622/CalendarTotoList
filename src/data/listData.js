@@ -5,13 +5,16 @@ export const listSlice = createSlice({
   // 액션 타입에 사용되는 이름.
   name: "listData",
   // reducer 초기 상태 값.
-  initialState: { value: [] },
+  initialState: {
+    value: JSON.parse(localStorage.getItem("lists")) || undefined,
+  },
   // reducer 맵. 키값(setUserName)은 작업을 생성하는데 사용.
   reducers: {
     // 리듀서 액션함수
     // action.type = 'auth/setUserName', action.payload = { userName: "xxx" }
     setList: (state, action) => {
       state.value = action.payload;
+      window.localStorage.setItem("lists", JSON.stringify(state.value));
     },
   },
 });

@@ -31,7 +31,7 @@ const DateSection = ({ today, setDate }) => {
   const [weekOfMonth, setWeekOfMonth] = useState([]);
   const [selectedDate, setSelectedDate] = useState(today.format("MM-D"));
 
-  let test = useSelector((state) => {
+  let reduxValue = useSelector((state) => {
     return state;
   });
 
@@ -76,8 +76,8 @@ const DateSection = ({ today, setDate }) => {
 
   // //날짜마다 투두리스트 배열
   const listsByDate = (v) => {
-    if (test.listData.value.result !== undefined) {
-      let lists = test.listData.value.result.filter((e) => e.date === v);
+    if (reduxValue.listData.value !== undefined) {
+      let lists = reduxValue.listData.value.result.filter((e) => e.date === v);
       return lists;
     } else {
       return "";
@@ -88,8 +88,6 @@ const DateSection = ({ today, setDate }) => {
   const truncate = (str) => {
     return str?.length > 10 ? str.substr(0, 10 - 1) + "..." : str;
   };
-
-  console.log(test.listData.value.result);
 
   return (
     <Container>
