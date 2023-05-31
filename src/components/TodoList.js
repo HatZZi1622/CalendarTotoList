@@ -8,7 +8,6 @@ import { setList } from "../data/listData";
 const Lines = (type) => {
   switch (type) {
     case "UnderLined":
-      console.log("타는중이다");
       return "line-through";
     case "NonLine":
       return "";
