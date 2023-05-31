@@ -9,7 +9,6 @@ import styled from "styled-components";
 function App() {
   const [getMoment, setMoment] = useState(moment());
   const [selectedDate, setSelectedDate] = useState("");
-  const [allList, setAllList] = useState("");
   let today = getMoment;
 
   console.log(today);
@@ -27,13 +26,9 @@ function App() {
           <DateSection
             today={today}
             setDate={(date) => setSelectedDate(date)}
-            allList={allList}
           />
         </CalendarWrap>
-        <TodoList
-          selectedDate={selectedDate}
-          setAllList={(e) => setAllList(e)}
-        />
+        <TodoList selectedDate={selectedDate} />
       </MainContainer>
     </div>
   );

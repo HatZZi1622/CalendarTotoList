@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import { useSelector } from "react-redux";
 
 const Colors = (type) => {
   switch (type) {
@@ -26,9 +27,13 @@ const Borders = (type) => {
   }
 };
 
-const DateSection = ({ today, setDate, allList }) => {
+const DateSection = ({ today, setDate }) => {
   const [weekOfMonth, setWeekOfMonth] = useState([]);
-  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedDate, setSelectedDate] = useState(today.format("MM-D"));
+
+  let test = useSelector((state) => {
+    return state;
+  });
 
   //정보 초기화 => 이 달의 주는 올해의 몇번째 주인지 정보를 입력
   useEffect(() => {
@@ -69,10 +74,10 @@ const DateSection = ({ today, setDate, allList }) => {
     }
   };
 
-  //날짜마다 투두리스트 배열
+  // //날짜마다 투두리스트 배열
   const listsByDate = (v) => {
-    if (allList !== "") {
-      let lists = allList.filter((e) => e.date === v);
+    if (test.listData.value.result !== undefined) {
+      let lists = test.listData.value.result.filter((e) => e.date === v);
       return lists;
     } else {
       return "";
@@ -84,7 +89,7 @@ const DateSection = ({ today, setDate, allList }) => {
     return str?.length > 10 ? str.substr(0, 10 - 1) + "..." : str;
   };
 
-  console.log(weekOfMonth);
+  console.log(test.listData.value.result);
 
   return (
     <Container>
@@ -114,10 +119,14 @@ const DateSection = ({ today, setDate, allList }) => {
                     </div>
                     <div className="listDiv">
                       {listsByDate(days.format("MM-D")) !== "" &&
-                        listsByDate(days.format("MM-D")).map((v) => {
+                        listsByDate(days.format("MM-D")).map((v, index) => {
                           return (
                             <>
-                              <div className="oneList">{truncate(v.value)}</div>
+                              {index < 3 && (
+                                <div className="oneList">
+                                  {truncate(v.value)}
+                                </div>
+                              )}
                             </>
                           );
                         })}
@@ -170,13 +179,16 @@ const Days = styled.div`
   .listDiv {
     display: flex;
     flex-direction: column;
+    align-items: center;
     width: 100%;
+    height: 80px;
     margin-top: 8px;
+    /* overflow: hidden; */
   }
 
   .oneList {
     display: flex;
-    width: 88%;
+    width: 90%;
     padding: 3px;
     border-radius: 3px;
     border: 1px solid #b7b9bd;

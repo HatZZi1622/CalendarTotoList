@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Check from "../assets/isCheck.png";
 import TimeModal from "./TimeModal";
+import { useDispatch } from "react-redux";
+import { setList } from "../data/listData";
 
 const Lines = (type) => {
   switch (type) {
@@ -25,7 +27,9 @@ const TypeCheck = (type) => {
   }
 };
 
-const TodoList = ({ selectedDate, setAllList }) => {
+const TodoList = ({ selectedDate }) => {
+  const dispatch = useDispatch();
+
   const [lists, setLists] = useState([]);
   const [newList, setNewList] = useState("");
   const [isTimeModalOpen, setIsTimeModalOpen] = useState(false);
@@ -37,7 +41,7 @@ const TodoList = ({ selectedDate, setAllList }) => {
     } else setSelectedList();
   }, [selectedDate, lists]);
 
-  const submit = (timeInfo) => {
+  const submit = async (timeInfo) => {
     let temp = {
       date: selectedDate,
       id: lists.length,
@@ -48,8 +52,9 @@ const TodoList = ({ selectedDate, setAllList }) => {
     };
     let result = [...lists];
     result.push(temp);
-    setLists(result);
-    setNewList("");
+    await setLists(result);
+    await setNewList("");
+    await dispatch(setList({ result }));
     setIsTimeModalOpen(false);
   };
 
@@ -67,7 +72,6 @@ const TodoList = ({ selectedDate, setAllList }) => {
       }
     }
     setSelectedList(temp);
-    // setAllList(lists);
   };
   const checkOut = (i) => {
     let temp = [...selectedList];
@@ -78,8 +82,6 @@ const TodoList = ({ selectedDate, setAllList }) => {
     temp2[temp2index] = { ...temp2[temp2index], isCheck: true };
     setLists(temp2);
   };
-
-  console.log(selectedList);
 
   return (
     <Container>
@@ -134,7 +136,6 @@ const TodoList = ({ selectedDate, setAllList }) => {
         open={isTimeModalOpen}
         timeSet={(time) => {
           submit(time);
-          setAllList(lists);
         }}
       />
     </Container>
