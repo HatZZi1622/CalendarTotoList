@@ -157,7 +157,7 @@ export default TodoList;
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  width: 400px;
+  width: 25%;
   height: 100%;
 `;
 
@@ -176,7 +176,7 @@ const Contents = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 550px;
+  height: 70vh;
   padding-bottom: 20px;
   padding-top: 10px;
   overflow-y: auto;
@@ -224,7 +224,7 @@ const OpenWrap = styled.div`
 const InputArea = styled.div`
   display: flex;
   flex-direction: column;
-  width: 92%;
+  width: 91%;
   padding: 10px;
   border: 0.5px solid #000000;
   border-radius: 5px;
